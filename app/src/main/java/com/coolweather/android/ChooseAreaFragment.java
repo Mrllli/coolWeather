@@ -82,12 +82,15 @@ public class ChooseAreaFragment extends Fragment {
      */
     private int currentLevel;
 
+    //初始化各种控件，去初始化了ArrayAdapter,将其设置为ListView的适配器
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //inflate是加载一个布局文件，返回的是某一个布局文件
         View view = inflater.inflate(R.layout.choose_area,container,false);
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
+        //就是列表列出来的省市
         listView = (ListView) view.findViewById(R.id.list_view);
         adapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,dataList);
         listView.setAdapter(adapter);
@@ -95,10 +98,12 @@ public class ChooseAreaFragment extends Fragment {
     }
 
 
+    //给ListView和Button设置了点击事件
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //设置列表元素的点击事件，如果列表等级为0则查询对应的城市，如果等级为1，则查询对应的区
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if(currentLevel == LEVEL_PROVINCE){
@@ -110,6 +115,8 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
+
+        //回退功能
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,7 +127,7 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
-
+        //默认查询省
         queryProvinces();
     }
 

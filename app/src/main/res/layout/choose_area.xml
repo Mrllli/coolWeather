@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:text="中国天气"
             android:textColor="#fff"
             android:textSize="20sp"/>
 
@@ -27,7 +28,6 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:background="@drawable/ic_launcher_background"
             />
     </RelativeLayout>
 
