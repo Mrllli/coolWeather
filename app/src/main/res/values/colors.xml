@@ -6,4 +6,5 @@
     <color name="lhlConfigColor1">#0081ff</color>
     <color name="lhlConfigColor2">#39b54a</color>
     <color name="lhlConfigColor3">#8799a3</color>
+    <color name="color_transparent">#333333</color>
 </resources>

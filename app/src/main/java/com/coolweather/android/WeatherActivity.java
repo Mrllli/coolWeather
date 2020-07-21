@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
 import com.coolweather.android.util.HttpUtil;
@@ -41,6 +43,9 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView carWashText;
     private TextView sportText;
 
+    //backgroundImage
+    private ImageView bingPicImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +62,8 @@ public class WeatherActivity extends AppCompatActivity {
         comfortText = (TextView) findViewById(R.id.comfort_text);
         carWashText = (TextView) findViewById(R.id.car_wash_text);
         sportText = (TextView) findViewById(R.id.sport_text);
+
+        bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
 //        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 //        String weatherString = prefs.getString("weather",null);
 //        Log.d(TAG, "onCreate: " + weatherString);
@@ -74,10 +81,15 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherId = getIntent().getStringExtra("weather_id");
         requestWeather(weatherId);
 
+
+        //loadImage
+        loadBingPic();
+
+
     }
 
     public void requestWeather(final String weatherId){
-        Log.d(TAG, "run: 77777777777777777777777777");
+
         //獲取對應地址的Url
         String weatherUrl = "http://guolin.tech/api/weather?cityid="+weatherId+"&key=6f08f409be284b0f8df4bef14cf4c7f5";
         Log.d(TAG, "requestWeather: " + weatherId);
@@ -98,7 +110,6 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
-                Log.d(TAG, "run: 77777777777777777777777777");
                 final  Weather weather = Utility.handleWeatherResponse(responseText);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -165,5 +176,30 @@ public class WeatherActivity extends AppCompatActivity {
         sportText.setText(sport);
 
 
+    }
+
+    private void loadBingPic(){
+        String requestBingPic = "http://guolin.tech/api/bing_pic";
+        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String bingPic = response.body().string();
+                //处理字符串
+                String[] picArr = bingPic.split(":");
+                final String bingPicNew = picArr[0] + "s:" + picArr[1];
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(WeatherActivity.this).load(bingPicNew).into(bingPicImg);
+                    }
+                });
+            }
+        });
     }
 }
