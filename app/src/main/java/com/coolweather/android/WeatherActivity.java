@@ -108,7 +108,7 @@ public class WeatherActivity extends AppCompatActivity {
                             editor.putString("weather",responseText);
                             editor.apply();
                             showWeatherInfo(weather);
-                            Log.d(TAG, "run: 666666666666666666666");
+
                         }else{
                             Toast.makeText(WeatherActivity.this, "獲取天氣數據失敗", Toast.LENGTH_SHORT).show();
                         }
