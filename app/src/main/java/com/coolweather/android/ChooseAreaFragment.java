@@ -1,6 +1,7 @@
 package com.coolweather.android;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ChooseAreaFragment extends Fragment {
+
+    private static final String TAG = "ChooseAreaFragment";
 
     public static final int LEVEL_PROVINCE = 0;
 
@@ -106,12 +109,22 @@ public class ChooseAreaFragment extends Fragment {
             //设置列表元素的点击事件，如果列表等级为0则查询对应的城市，如果等级为1，则查询对应的区
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                //儅當前頁面LEVEL屬於province時
                 if(currentLevel == LEVEL_PROVINCE){
+                    //獲取到點擊所對應的城市
                     selectedProvince = provinceList.get(position);
                     queryCities();
                 }else if(currentLevel == LEVEL_CITY){
+                    //儅當前頁面屬於city時獲取到所點擊的city
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if(currentLevel == LEVEL_COUNTY){
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
+
                 }
             }
         });
@@ -148,6 +161,7 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         }else{
+            //去服務器上查詢
             String address = "http://guolin.tech/api/china";
             queryFromServer(address,"province");
         }
@@ -182,7 +196,6 @@ public class ChooseAreaFragment extends Fragment {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
         countyList = DataSupport.where("cityid=?",String.valueOf(selectedCity.getId())).find(County.class);
-
         if(countyList.size()>0){
             dataList.clear();
             for(County county:countyList){
@@ -218,6 +231,7 @@ public class ChooseAreaFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 boolean result = false;
+                //根據類型將數據存儲入數據庫
                 if("province".equals(type)){
                     result = Utility.handlerProvinceResponse(responseText);
                 }else if("city".equals(type)){
@@ -229,6 +243,7 @@ public class ChooseAreaFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            //關閉加載框
                             closeProgressDialog();
                             if("province".equals(type)){
                                 queryProvinces();
