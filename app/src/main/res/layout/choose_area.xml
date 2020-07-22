@@ -28,6 +28,7 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:background="@drawable/ic_launcher_foreground"
             />
     </RelativeLayout>
 
